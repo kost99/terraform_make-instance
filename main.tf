@@ -5,6 +5,12 @@ provider "google" {
     zone        =      "${var.region}-a"
 }
 
+resource "google_compute_address" "static" {
+    name    = "vm-public-address"
+    project = var.project
+    region  = var.region
+}
+
 resource "google_compute_instance" "vm_instance" {
     name            = "instance-2"
     machine_type    = "e2-micro"
@@ -20,6 +26,7 @@ resource "google_compute_instance" "vm_instance" {
         network = "default"
 
         access_config {
+            nat_ip = google_compute_address.static.address
         }
     }
 
